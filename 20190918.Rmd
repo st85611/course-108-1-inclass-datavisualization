@@ -118,3 +118,32 @@ filter(collegeData,
 
 ```
 
+```{r}
+group_by(StuDF,
+         性別) -> StuDF_by性別
+
+# 使用grouped data frame
+summarise(StuDF_by性別,
+        平均成績=mean(成績),
+        最高分=max(成績),
+        最低分=min(成績))
+
+# 使用ungrouped data frame
+summarise(StuDF,
+        平均成績=mean(成績),
+        最高分=max(成績),
+        最低分=min(成績))
+```
+
+```{r}
+group_by(collegeData,
+         縣市名稱,體系別) ->
+collegeData_grouped
+
+  summarise(collegeData_grouped,
+            一年級男生總數 =sum(一年級男生),
+            一年級女生總數 =sum(一年級女生),
+            學校數目=n()
+            )
+```
+
