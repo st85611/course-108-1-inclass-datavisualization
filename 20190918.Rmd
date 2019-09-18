@@ -62,6 +62,7 @@ slice(collegeData,c(1:4))
 slice(collegeData,(n()-2):n())
 slice(collegeData,101:110)
 ```
+
 ```{r}
 StuDF
 mutate(StuDF,
@@ -71,5 +72,12 @@ transmute(StuDF,
 StuDF
 mutate(StuDF,
        調分後成績=成績+10) -> StuDF
+```
+```{r}
+mutate(collegeData,
+       男生=一年級男生+二年級男生+三年級男生+四年級男生) -> collegeData
+collegeData$女生 <- collegeData$一年級女生+collegeData$二年級女生+collegeData$三年級女生+collegeData$四年級女生
+
+mutate(collegeData,男女生比=男生/女生) -> collegeData
 ```
 
