@@ -36,4 +36,40 @@ StuDF <- data.frame(
   )
 StuDF 
 ```
+class(StuDF)
+typeof(StuDF)
+length(StuDF) # 從向量角度看
+nrow(StuDF) # 從矩陣角度看
+```{r}
+library(dplyr)
+StuDF
+slice(StuDF,1:3)
+slice(StuDF,4:5)
+slice(StuDF,n())
+```
+```{r}
+#最後兩筆#
+slice(StuDF,(n()-1):n())
+```
+```{r}
+slice(StuDF,c(1,4,8))
+```
+library(readr)
+collegeData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/103_student.csv")
+```{r}
+str(collegeData)
+slice(collegeData,c(1:4))
+slice(collegeData,(n()-2):n())
+slice(collegeData,101:110)
+```
+```{r}
+StuDF
+mutate(StuDF,
+       調分後成績=成績+10)
+transmute(StuDF,
+       調分後成績=成績+10) # 不保留其他變數
+StuDF
+mutate(StuDF,
+       調分後成績=成績+10) -> StuDF
+```
 
