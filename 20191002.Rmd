@@ -12,3 +12,44 @@ showtext_auto(enable=TRUE) #啟用字體
 theme_set(theme_classic())
 knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
 ```
+```{r}
+library(scales) # show_col()螢幕立即顯示顏色
+library(colorspace) # 調色盤選擇及ggplot應用工具
+library(shinyjs) # 支援套件
+library(grDevices) # 不同顏色模型代碼的呈現及轉換
+
+```
+choose_color()
+choose_palette(gui="shiny")
+
+```{r}
+colorspace::sequential_hcl(n = 7, h = c(250, 90), c = c(40, NA, 55), l = c(33, 98), power = c(0.5, 1), register = "myycolor")
+```
+```{r}
+
+```
+
+```{r}
+data.frame(
+  x1 = factor(sample(c(1L,2L,3L),100,replace=T)),
+  x2 = runif(100),
+  y = runif(100),
+  z1 = rnorm(100),
+  z2 = factor(sample(letters[1:4],100,replace=T))
+) -> df_example
+```
+
+```{r}
+df_example %>%
+  ggplot()+
+  geom_boxplot(
+    aes(x=x1,y=y,fill=z2)
+  ) -> basicBoxplot
+basicBoxplot
+```
+```{r}
+
+basicBoxplot +
+  scale_color_continuous_sequential(palette = "myycolor")
+```
+
