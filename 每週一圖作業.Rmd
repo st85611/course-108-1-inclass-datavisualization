@@ -36,6 +36,8 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   * 作圖用資料物件生成
   
 ```{r data cleaning, echo=TRUE, eval=T}
+library(readr)
+graphData <- read_csv("BP01Y01.csv")
 
 ```
 
@@ -43,7 +45,14 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
 
 ```{r graph, echo=T, eval=T}
 
+graphData %>% 
+  ggplot(aes(x=期間,y=`日圓JPY/USD`))+
+  geom_line()+
+  theme(text=element_text(size=10,  family="QYuan")
+        ) -> finalplot
+finalplot
 ```
+
 
 #### 設計說明
 說明想傳達的訊息（必要）及設計想法（非必要）。寫在***之後
