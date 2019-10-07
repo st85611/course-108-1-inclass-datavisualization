@@ -46,10 +46,10 @@ graphData <- read_csv("BP01Y01.csv")
 ```{r graph, echo=T, eval=T}
 
 graphData %>% 
-  ggplot(aes(x=期間,y=`日圓JPY/USD`))+
-  geom_line()+
-  theme(text=element_text(size=10,  family="QYuan")
-        ) -> finalplot
+  ggplot()+
+  geom_line(
+    aes(x=期間,y=`日圓JPY/USD`,color="red")
+    )-> finalplot
 finalplot
 ```
 
@@ -58,5 +58,5 @@ finalplot
 說明想傳達的訊息（必要）及設計想法（非必要）。寫在***之後
 
 *** 
-
+圖表為日圓對美元匯率的變動,從2010年到2018年間的變化,可以看到在2011-2012年間為最低點為日圓強勢的時期,而在這之後,日圓開始疲乏,到2015年貶值最為嚴重,而至目前仍持續低迷
 
