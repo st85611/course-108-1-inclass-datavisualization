@@ -2,8 +2,8 @@
 title: "每週一圖作業範例"
 output: html_document
 params:
-  組員: ["小明","小花"]  
-  學號: ["410773818","410773293"]
+  組員: ["王童緯"]  
+  學號: ["710761115"]
 ---
 
 #### 環境設定
@@ -37,36 +37,28 @@ knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.show
   * 作圖用資料物件生成
   
 ```{r data cleaning, echo=TRUE, eval=T}
-# 資料引入
-load("example_data.Rda")
+
 
 # 資料處理
-employmentLaborForceData1 <- dataList[[1]]$data
-employmentLaborForceData1 %>%
-  tidyr::gather(`年平均勞動力`,`年平均就業人口`, key="類別",value="人數（千）") %>%
-  mutate(
-    年=as.integer(as.character(年))
-  ) -> graphData_employment
+library(readr)
+graphData <- read_csv("123456.csv")
 
 # 作圖用資料物件生成：處理好可進行作圖的資料請存在一個名為graphData的list物件裡
-graphData <- list()
-graphData$graphData_employment <- graphData_employment
+
 ```
 
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
-graphData$graphData_employment %>%
-  filter(年>=1995) %>%
-  ggplot()+
-  geom_line(
-    aes(
-        x=年,
-        y=`人數（千）`,
-        group=類別,
-        color=類別),
-    size=1
-  )
+graphData  %>%
+  ggplot(aes(x=`allocation of annual`,xlab="民國",ylab="份額"))+
+  geom_line(aes( y=`cash dividend per share`))+
+      geom_line(aes( y=`stock dividend per share`))+
+  labs(title = "富邦金控")
+       
+      
+   
+  
 ```
 
 #### 設計說明
