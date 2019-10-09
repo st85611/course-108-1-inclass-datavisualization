@@ -1,0 +1,149 @@
+---
+title: '121'
+author: "Tung-Wei"
+date: "2019年9月11日"
+output: html_document
+---
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext)
+
+#font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+```
+```{r}
+disposable
+```
+
+```{r}
+disposableIncome <- read_csv("https://www.dropbox.com/s/z80sbjw94cjex8x/disposableIncome.csv?dl=1")
+library(readr)
+disposableIncome <- read_csv("https://www.dropbox.com/s/z80sbjw94cjex8x/disposableIncome.csv?dl=1",locale = locale(encoding = "BIG5"), skip = 4)
+disposableIncome_gather <- read_csv("https://www.dropbox.com/s/cdw1f10jow4frxb/disposableIncome_gather.csv?dl=1")
+```
+
+```{r}
+load(url("https://github.com/tpemartin/course-108-1-inclass-datavisualization/blob/master/%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/graphData_homework2019-10-08_014.Rda?raw=true"))
+c('年分','地區','來台旅遊人數(萬)') -> names(graphData$travelerFromAsia)
+```
+
+```{r}
+graphData$travelerFromAsia %>%
+  mutate(
+  年分= as.integer(年分)
+  ) ->graphData$travelerFromAsia
+
+graphData$travelerFromAsia %>%
+  ggplot(aes(x=`年分`,y=`來台旅遊人數(萬)`,color=地區,linetype=地區))+
+           geom_line()
+  
+  )
+```
+
+```{r}
+dataCPI <- read_csv("https://www.dropbox.com/s/ov2bvef5o3apei0/PR0101A2Mc.csv?dl=1")
+dataCPI <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/PR0101A2Mc.csv", 
+    locale = locale(encoding = "BIG5"), skip = 3)
+
+## 改變數名稱
+dataCPI %>% 
+  dplyr::rename(
+    年月=X1,
+    CPI=原始值
+  ) -> dataCPI
+
+# 移除「有NA」的row
+dataCPI %>% na.omit() -> dataCPI
+
+## 調整class
+dataCPI$年月 %>% str_c("/01") %>% #擴增為YMD表示
+  ymd() -> dataCPI$年月
+
+# 改成2003M1為基期,其指數為100
+dataCPI %>% filter(年月==ymd("2003-01-01")) %>% 
+  select(CPI) -> CPI2003M1
+dataCPI %>% 
+  mutate(CPI=CPI/CPI2003M1$CPI*100) -> dataCPI2
+```
+
+```{r}
+dataCPI2 %>% ggplot()+
+  geom_line(aes(x=年月,y=CPI)) -> basePlot2
+basePlot2
+```
+設限決定變數所要表達的範圍 2003下面 無上限為NA
+```{r}
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA))
+```
+可以選擇你要的顯示的點
+```{r}
+breakDates <- c("2003-01-01",
+                "2005-01-01","2010-01-01","2015-01-01",
+                "2018-01-01")
+breakDates %>% ymd() -> breakDates
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA),
+               breaks = breakDates) #斷點#
+```
+
+```{r}
+breakDates <- c("2003-01-01",
+                "2005-01-01","2010-01-01","2015-01-01",
+                "2018-01-01")
+breakDates %>% ymd() -> breakDates
+
+breakLabels <- c("2003",
+                 "2005","2010","2015",
+                 "2018")
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA),
+               breaks = breakDates,
+               labels = breakLabels)
+```
+
+```{r}
+basePlot2 +
+  scale_x_date(limits=c(ymd("2003-01-01"),NA),
+               breaks = breakDates,
+               labels = function(x) year(x)-1911)
+```
+
+```{r}
+disposableIncome_gather %>%
+  group_by(所得組距) %>%
+  summarise(
+    最後一年=last(年),
+    可支配所得=last(可支配所得)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    所得組=stringr::str_replace(
+      as.character(所得組距),"可支配所得按戶數五等分位組-","")
+    )-> disposableIncome_gather_legend
+
+disposableIncome_gather %>%
+  ggplot(aes(x=年,y=可支配所得))+
+  geom_line(
+    aes(linetype=所得組距)
+  ) +
+  scale_linetype_manual(
+    values=c("15","24","34","51","71"),
+    breaks=c(
+    "可支配所得按戶數五等分位組-次低所得組",
+    "可支配所得按戶數五等分位組-中間所得組",
+    "可支配所得按戶數五等分位組-次高所得組")
+    ) +
+  theme(legend.position = "none") + # 取消legend
+  geom_text(
+    data=disposableIncome_gather_legend,
+    aes(
+      x=最後一年,
+      y=可支配所得,
+      label=所得組
+    ),
+    nudge_x= -3.8, size=3
+  )
+```
+
