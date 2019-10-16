@@ -48,7 +48,7 @@ graphData <- read_csv("BP01Y01.csv")
 graphData %>% 
   ggplot()+
   geom_line(
-    aes(x=期間,y=`日圓JPY/USD`,color="red")
+    aes(x=$cash,y=`日圓JPY/USD`,color="red")
     )-> finalplot
 finalplot
 ```
