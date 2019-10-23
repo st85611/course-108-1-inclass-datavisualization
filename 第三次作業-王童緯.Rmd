@@ -53,19 +53,22 @@ graphdata3 <- graphdata2[order(-graphdata2$國內分行數),]
 graphdata3 %>%
   mutate(
     銀行類別=reorder(銀行別,
-                    國內分行數,decreasing=T,order=T) # order=T才會輸出成ordered factor
+                    國內分行數,decreasing=T,order=T) 
   ) -> graphdata3
 
 ```
 #### 繪圖程式
 
 ```{r graph, echo=T, eval=T}
+
 graphdata3 %>%
-  ggplot(aes(x=銀行類別))+
+  ggplot()+
   geom_col(
-    aes(y=國內分行數)
-  ) -> finalplot
-finalplot
+    aes(x=銀行類別,y=國內分行數,color=銀行類別,fill=銀行類別))+
+      labs(title = "108年分行超過150家的銀行")
+   -> finalplot
+
+ 
 ```
 
 #### 設計說明
