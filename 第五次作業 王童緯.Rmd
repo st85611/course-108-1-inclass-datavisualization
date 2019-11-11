@@ -1,0 +1,75 @@
+---
+title: "每週一圖作業"
+output: html_document
+params:
+  組員: ["王童緯"]  
+  學號: ["710761115"]
+---
+
+#### 環境設定
+
+以下為老師執行時一定會存在的環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(tidyr); library(showtext)
+
+font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(out.width='80%', fig.asp=.75, fig.align='center', fig.showtext=T)
+```
+
+#### 資料處理
+
+此部份在做：
+
+  * 原始Rda資料引入（即引入**dataList**物件）；
+  
+  * 資料清理成作圖用graphData物件。
+
+請將你最原始的資料連同作業一起上傳到作業上傳網址：  
+  * 若「原始資料為網頁下載」，且下載指令寫在data cleaning chunk裡的話，可以不用上傳「資料」。  
+  * 若原始資料有很多個檔案，請先引入成data frame並存在「一個」.Rda檔裡上傳（如`example_data.Rda`檔）。  
+
+資料檔引入到進入作圖前的資料處理請寫在下面區塊，分二部份：
+
+  * 資料處理  
+  * 作圖用資料物件生成(最後形成作圖資料物件graphData)
+  
+```{r data cleaning, echo=TRUE, eval=T}
+library(readr)
+data <- read_csv("Grade.xlsx.csv")
+
+data<-data[-11,]
+data %>%
+  mutate(
+    年級=factor(年級,levels=c("大一","大二","大三","大四","碩一上","碩一下","平均"))) -> data
+
+```
+
+#### 繪圖程式
+
+```{r graph, echo=T, eval=T}
+library(grDevices) # 不同顏色模型代碼的呈現及轉換
+library(scales) # show_col()螢幕立即顯示顏色
+library(colorspace) # 調色盤選擇及ggplot應用工具
+library(shinyjs) # 支援套件
+colorspace::sequential_hcl(n = 7, h = c(312, 31), c = c(86, NA, 22), l = c(25, 95), power = c(0.7, 1.3), register = "myPalette")
+data %>%
+  ggplot()+
+  geom_col(
+    aes(x=科目,y=分數,fill=年級),position="dodge",size=0.5
+)+scale_fill_discrete_sequential(palette="myPalette" ,nmax=8)+
+  labs(title="大學到研究所_經濟相關成績")-> finalplot
+finalplot
+```
+
+#### 設計說明
+說明想傳達的訊息（必要）及設計想法（非必要）。寫在***之後
+
+*** 
+
+了解自己從大學到碩班之後的經濟學習程度，在總體、個體、計量下，其實差異不大。
+
+
+
+
