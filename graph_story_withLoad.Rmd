@@ -1,0 +1,46 @@
+---
+title: "每週一圖作業繪圖說明檔"
+output: html_document
+params:
+  組員: ["王童緯"]  
+  學號: ["710761115"]
+---
+
+#### 環境設定
+
+以下為老師執行時一定會存在的環境設定
+```{r basic setup, message=FALSE, echo=TRUE, eval=T}
+rm(list=ls())
+library(dplyr); library(stringr); library(ggplot2); library(plotly); library(lubridate); library(readr); library(colorspace); library(grDevices); library(shiny); library(shinyjs); library(scales)
+library(tidyr); library(showtext); library(tidyverse); library(colorspace)
+
+#font_add("QYuan","cwTeXQYuan-Medium.ttf") # 新增字體
+showtext_auto(enable=TRUE) #啟用字體
+theme_set(theme_classic())
+knitr::opts_chunk$set(fig.align='center', fig.showtext=T)
+```
+
+
+#### 繪圖程式
+
+```{r graph, echo=T, eval=T}
+load("graphData.Rda") # 此行為第一行
+library(grDevices) # 不同顏色模型代碼的呈現及轉換
+library(scales) # show_col()螢幕立即顯示顏色
+library(colorspace) # 調色盤選擇及ggplot應用工具
+library(shinyjs) # 支援套件
+colorspace::sequential_hcl(n = 7, h = c(312, 31), c = c(86, NA, 22), l = c(25, 95), power = c(0.7, 1.3), register = "myPalette")
+data %>%
+  ggplot()+
+  geom_col(
+    aes(x=科目,y=分數,fill=年級),position="dodge",size=0.5
+)+scale_fill_discrete_sequential(palette="myPalette" ,nmax=8)+
+  labs(title="大學到研究所_經濟相關成績")-> finalplot
+finalplot
+```
+
+#### 設計說明
+說明想傳達的訊息（必要）及設計想法（非必要）。寫在***下一行。
+
+*** 
+了解自己從大學到碩班之後的經濟學習程度，在總體、個體、計量下，其實差異不大
